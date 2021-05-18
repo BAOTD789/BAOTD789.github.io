@@ -8,11 +8,26 @@ var btn = new MyToolkit.Button;
     btn.onclick(function(event){
         console.log(event)
         console.log(event.target)
+		pb.increase();
     })
 	//event Handler for state Changes
 	btn.stateChanged(function(event){
 		console.log(event)
 	})
+
+var btn2 = new MyToolkit.Button;
+btn2.setId("btn2");
+btn2.move(20,200);
+//event Handler for detecting clicks
+btn2.onclick(function(event){
+	console.log(event)
+	console.log(event.target)
+	pb.decrease();
+})
+//event Handler for state Changes
+btn2.stateChanged(function(event){
+	console.log(event)
+})
 
 var cb = new MyToolkit.CheckBox;
 	cb.setId("cb1");
@@ -37,5 +52,13 @@ var rbSet = new MyToolkit.RadioButton(opt);
 var tb = new MyToolkit.TextBox;
 	tb.move(190,23);
 
-var pb = new MyToolkit.ProgressBar;
+var sb = new MyToolkit.ScrollBar(250);
+	sb.setId("sb1");
+	sb.move(340, 70);
+	sb.onclick(function(event){
+        console.log(event.target)
+		sb.increase();
+    })
+
+var pb = new MyToolkit.ProgressBar(360);
 	pb.move(20, 350);

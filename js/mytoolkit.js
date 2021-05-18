@@ -205,7 +205,7 @@ var MyToolkit = (function() {
     var TextBox = function(){
         console.log('test')
         var textbox = draw.group();
-        var rect = textbox.rect(200,30).fill("white").stroke({color: "black", width: 2});
+        var rect = textbox.rect(190,30).fill("white").stroke({color: "black", width: 2});
         var text = textbox.text("hello").move(2,4);
         var caret = textbox.line(45, 2.5, 45, 25).stroke({width:1, color: "black"})
         window.add(textbox)
@@ -219,13 +219,107 @@ var MyToolkit = (function() {
         }
     }
 
-    var ScrollBar = function(){
+    var ScrollBar = function(height){
+        var scrollBar = draw.group(); 
+        var bar = scrollBar.rect(35,height).fill('grey')
+            .stroke({color: "black", width: "2"})
+        var upArrow = scrollBar.rect(35,height*0.13).fill('red')
+            .stroke({color: "black", width: "2"})
+        var downArrow = scrollBar.rect(35,height*0.13).fill('red')
+            .stroke({color: "black", width: "2"}).move(0,height*0.97)
+        var nav = scrollBar.rect(35,height*0.13).fill('black')
+            .stroke({color: "black", width: "2"}).move(0,height*0.13)
+        var clickEvent = null;
+        var stateEvent = null;
+        var defaultState = "idle";
 
+        upArrow.mouseover(function(){
+            this.fill({ color: 'blue'})
+            defaultState = "hover"
+            transition()
+        })
+        upArrow.mouseout(function(){
+            this.fill({ color: 'red'})
+            defaultState = "idle"
+            transition()
+        })
+        upArrow.mousedown(function(){
+            this.fill({ color: 'pink'})
+            defaultState = "pressed"
+            transition()
+        })
+        upArrow.mouseup(function(){
+            this.fill({ color: 'red'})
+            if (defaultState == "pressed"){
+                if(clickEvent != null)
+                    clickEvent(event)
+            }   
+            defaultState = "up"
+            transition()
+        })
+        downArrow.mouseover(function(){
+            this.fill({ color: 'blue'})
+            defaultState = "hover"
+            transition()
+        })
+        downArrow.mouseout(function(){
+            this.fill({ color: 'red'})
+            defaultState = "idle"
+            transition()
+        })
+        downArrow.mousedown(function(){
+            this.fill({ color: 'pink'})
+            defaultState = "pressed"
+            transition()
+        })
+        downArrow.mouseup(function(){
+            this.fill({ color: 'red'})
+            if (defaultState == "pressed"){
+                if(clickEvent != null)
+                    clickEvent(event)
+            }   
+            defaultState = "up"
+            transition()
+        })
+        function transition()
+        {
+            if(stateEvent != null)
+                stateEvent(defaultState)
+
+        }
+        return {
+            move: function(x, y) {
+                scrollBar.move(x, y);
+            },
+            stateChanged: function(eventHandler){
+                stateEvent = eventHandler
+            },
+            increase: function(){
+                nav.move(nav.x, height * 0.10); 
+            },
+            decrease: function(){
+                nav.move(nav.x, -height * 0.10);                     
+            },
+            onclick: function(eventHandler){
+                clickEvent = eventHandler
+            },
+            src: function(){
+                return rect;
+            },
+            setId: function(id){
+                scrollBar.attr("id", id);
+            }
+        }
     }
 
-    var ProgressBar = function(){
-        var button = draw.group();
-        var rect = button.rect(150,35).fill('grey').stroke({color: "black", width: "2"})
+    var ProgressBar = function(width){
+        var progressBar = draw.group();
+        var barWidth = width;
+        var progressWidth = 0;
+        var bar = progressBar.rect(width,35).fill('grey')
+            .stroke({color: "black", width: "2"})
+        var progress = progressBar.rect(width,35).fill('green')
+            .stroke({color: "black", width: "2"});
         var stateEvent = null;
         var defaultState = "idle";
 
@@ -237,10 +331,20 @@ var MyToolkit = (function() {
         }
         return {
             move: function(x, y) {
-                button.move(x, y);
+                progressBar.move(x, y);
             },
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
+            },
+            increase: function(){
+                if(progressWidth < width)
+                    progressWidth += width * 0.10;
+                    progress.width(progressWidth);
+            },
+            decrease: function(){
+                if(progressWidth > 0)
+                    progressWidth -= width * 0.10;
+                    progress.width(progressWidth);
             },
             onclick: function(eventHandler){
                 clickEvent = eventHandler
