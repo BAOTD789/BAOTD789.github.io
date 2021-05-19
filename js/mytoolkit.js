@@ -311,6 +311,9 @@ var MyToolkit = (function() {
         var text = textbox.text("").move(2,4);
         var caret = textbox.rect(1, 20).stroke({width:.5, color: "black"}).move(3,4);
         var runner = caret.animate().width(0);
+        var inputText = document.createElement("textarea");
+        var foreignObject = textbox.foreignObject(190, 30)
+        foreignObject.add(inputText)
         runner.loop(1000, 1, 0);
 
         return {

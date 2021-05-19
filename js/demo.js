@@ -4,7 +4,7 @@ import {MyToolkit} from './mytoolkit.js';
 var win = new MyToolkit.Window;
 
 // Implement a MyToolkit Button
-var btn = new MyToolkit.Button("Test Me");
+var btn = new MyToolkit.Button("Increase Progress");
     btn.setId("btn1");
     btn.move(20,20);
 	//event Handler for detecting clicks
