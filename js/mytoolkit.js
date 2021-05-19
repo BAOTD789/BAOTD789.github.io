@@ -404,7 +404,6 @@ var MyToolkit = (function() {
         
         var topPos = upArrow.y() + nav.height();
         var botPos = downArrow.y() - nav.height();
-        console.log(topPos,botPos);
         var clickEvent = null;
         var stateEvent = null;
         var defaultState = "idle";
@@ -651,9 +650,10 @@ var MyToolkit = (function() {
             /**
              * gets the Progress Bar's current percentage
              * @memberof ProgressBar
+             * @return {number} precentage of bar done (0 - 100)
             */
             getIncrement: function(){
-                console.log((progressWidth/length).toFixed(2));
+                return((progressWidth/length).toFixed(2) * 100);
             },
             /**
              * Allows for the element to be interacted with click events

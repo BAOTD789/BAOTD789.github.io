@@ -96,7 +96,7 @@ btn4.move(20,300);
 
 //event Handler for detecting clicks
 btn4.onclick(function(event){
-	pb.getIncrement();
+	console.log(pb.getIncrement());
 })
 
 var cus = new MyToolkit.Custom(win.src());
