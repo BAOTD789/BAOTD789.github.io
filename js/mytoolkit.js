@@ -685,8 +685,9 @@ var MyToolkit = (function() {
     }
 
     /** @module
-     * Custom Widget- Widget Fill Color Changer
+     * Custom
      * @constructor
+     * @param {element} widget_src - SVG widget.
     */
     var Custom = function(widget_src){
         var palette = draw.group();
