@@ -7,7 +7,7 @@ var MyToolkit = (function() {
     
     var Window = function(){
         var window = draw.group();
-        var frame = window.rect(400,400).stroke({color: "black", width: 2}).fill("white");
+        var frame = window.rect(400,400).stroke({color: "black", width: 2}).fill("firebrick");
 
         return {
             add(widget){
@@ -99,7 +99,7 @@ var MyToolkit = (function() {
                 stateEvent = eventHandler
             },
             /**
-             * Outputs whenever the element is clicked
+             * Allows for the element to be interacted with click events
              * @memberof Button
              * @param {function} eventHandler - 
              * click events (eg.mouseover, mouseout, mousedown, mouseup)
@@ -115,7 +115,7 @@ var MyToolkit = (function() {
                 return rect;
             },
             /**
-             * returns the src value of the element's svg.
+             * sets the id of the Widget.
              * @memberof Button
              * @param {string} id - sets the id of the widget  
             */
@@ -200,7 +200,13 @@ var MyToolkit = (function() {
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
-            checked: function(eventHandler){
+            /**
+             * Outputs whether or not the Checkbox is checked
+             * @memberof CheckBox
+             * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
+             * @return {boolean} checked
+            */
+            checked: function(){
                 return checked;
             },
             /**
@@ -215,12 +221,13 @@ var MyToolkit = (function() {
             /**
              * returns the src value of the element's svg.
              * @memberof CheckBox
+             * @return {element} the Checkbox SVG
             */
             src: function(){
                 return rect;
             },
             /**
-             * returns the src value of the element's svg.
+             * sets the id of the Widget.
              * @memberof CheckBox
              * @param {string} id - sets the id of the widget  
             */
@@ -291,18 +298,44 @@ var MyToolkit = (function() {
 
         }
         return {
+            /**
+             * Move the element across the x&y plane
+             * @memberof RadioButton
+             * @param {Number} x - moves the element up or down. Pos → & Neg  ←.
+             * @param {Number} y - moves the element up or down.  Pos ↑ & Neg ↓.
+            */
             move: function(x, y) {
                 buttonSet.move(x, y);
             },
+            /**
+             * Outputs whenever the element's state is updated
+             * @memberof RadioButton
+             * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
+            */
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
+            /**
+             * Allows for the element to be interacted with click events
+             * @memberof RadioButton
+             * @param {function} eventHandler - 
+             * click events (eg.mouseover, mouseout, mousedown, mouseup)
+            */
             onclick: function(eventHandler){
                 clickEvent = eventHandler
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof RadioButton
+            */
             src: function(){
                 return circle;
             },
+            /**
+             * sets the id of the Widget.
+             * @memberof RadioButton
+             * @param {string} id - sets the id of the widget  
+            */
             setId: function(id){
                 buttonSet.attr("id", id);
             }
@@ -325,12 +358,27 @@ var MyToolkit = (function() {
         runner.loop(1000, 1, 0);
 
         return {
+            /**
+             * Move the element across the x&y plane
+             * @memberof TextBox
+             * @param {Number} x - moves the element up or down. Pos → & Neg  ←.
+             * @param {Number} y - moves the element up or down.  Pos ↑ & Neg ↓.
+            */
             move: function(x,y){
                 textbox.move(x,y);
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof TextBox
+            */
             src: function(){
                 return textbox;
             },
+            /**
+             * sets the id of the Widget.
+             * @memberof TextBox
+             * @param {string} id - sets the id of the widget  
+            */
             setId: function(id){
                 textbox.attr("id", id);
             }
@@ -435,12 +483,28 @@ var MyToolkit = (function() {
 
         }
         return {
+            /**
+             * Move the element across the x&y plane
+             * @memberof ScrollBar
+             * @param {Number} x - moves the element up or down. Pos → & Neg  ←.
+             * @param {Number} y - moves the element up or down.  Pos ↑ & Neg ↓.
+            */
             move: function(x, y) {
                 scrollBar.move(x, y);
             },
+            /**
+             * Returns the position of the scroll Bar
+             * @memberof ScrollBar
+             * @return {number} nav's y position
+            */
             getThumbPos: function() {
                 return(nav.y())
             },
+            /**
+             * Sets the position of the scroll Bar
+             * @memberof ScrollBar
+             * @param {Number} y - move's scroll Bar to y's position.
+            */
             setThumbPos: function(prog) {
                 nav.move(nav.x(), prog - scrollBar.y() * 2);
                 if(nav.y() < topPos) {                    
@@ -452,15 +516,35 @@ var MyToolkit = (function() {
                     defaultState = "bottom of scroll bar"
                 }
             },
+            /**
+             * Outputs whenever the element's state is updated
+             * @memberof ScrollBar
+             * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
+            */
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
+            /**
+             * Allows for the element to be interacted with click events
+             * @memberof ScrollBar
+             * @param {function} eventHandler - 
+             * click events (eg.mouseover, mouseout, mousedown, mouseup)
+            */
             onclick: function(eventHandler){
                 clickEvent = eventHandler
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof ScrollBar
+            */
             src: function(){
                 return rect;
             },
+            /**
+             * sets the id of the Widget.
+             * @memberof ScrollBar
+             * @param {string} id - sets the id of the widget  
+            */
             setId: function(id){
                 scrollBar.attr("id", id);
             }
@@ -492,12 +576,27 @@ var MyToolkit = (function() {
 
         }
         return {
+            /**
+             * Move the element across the x&y plane
+             * @memberof ProgressBar
+             * @param {Number} x - moves the element up or down. Pos → & Neg  ←.
+             * @param {Number} y - moves the element up or down.  Pos ↑ & Neg ↓.
+            */
             move: function(x, y) {
                 progressBar.move(x, y);
             },
+            /**
+             * Outputs whenever the element's state is updated
+             * @memberof ProgressBar
+             * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
+            */
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
+            /**
+             * Increments he Progress bar by 10%
+             * @memberof ProgressBar
+            */
             increase: function(){
                 if(progressWidth < length){
                     if(progressWidth + length * 0.1 >= length){
@@ -516,6 +615,10 @@ var MyToolkit = (function() {
                 }
                 
             },
+            /**
+             * Decrements he Progress bar by 10%
+             * @memberof ProgressBar
+            */
             decrease: function(){
                 if(progressWidth > 0){
                     if(progressWidth - length * 0.1 < 0){
@@ -533,6 +636,11 @@ var MyToolkit = (function() {
                     transition();
                 }
             },
+            /**
+             * Sets the Progress Bar to a certain percentage
+             * @memberof ProgressBar
+             * @param {number} prog - percentage (0.00 - 1)
+            */
             setIncrement: function(prog){
                 console.log(prog);
                 if((0 < prog) && (prog < 1)){
@@ -541,15 +649,35 @@ var MyToolkit = (function() {
                     progress.width(progressWidth);
                 }
             },
-            getIncrement: function(prog){
+            /**
+             * gets the Progress Bar current percentage
+             * @memberof ProgressBar
+             * @param {number} prog - percentage (0.00 - 1)
+            */
+            getIncrement: function(){
                 console.log((progressWidth/length).toFixed(2));
             },
+            /**
+             * Allows for the element to be interacted with click events
+             * @memberof ProgressBar
+             * @param {function} eventHandler - 
+             * click events (eg.mouseover, mouseout, mousedown, mouseup)
+            */
             onclick: function(eventHandler){
                 clickEvent = eventHandler
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof ProgressBar
+            */
             src: function(){
                 return rect;
             },
+            /**
+             * sets the id of the Widget.
+             * @memberof ProgressBar
+             * @param {string} id - sets the id of the widget  
+            */
             setId: function(id){
                 progressBar.attr("id", id);
             }
@@ -557,7 +685,7 @@ var MyToolkit = (function() {
     }
 
     /** @module
-     * Custom - Tab Window
+     * Custom Widget- Widget Fill Color Changer
      * @constructor
     */
     var Custom = function(widget_src){
@@ -596,7 +724,7 @@ var MyToolkit = (function() {
             },
             /**
              * set the size of the element
-             * @memberof Button
+             * @memberof Custom
              * @param {Number} width - new width of the button
              * @param {Number} height - new height of the button
             */
@@ -608,7 +736,7 @@ var MyToolkit = (function() {
             },
             /**
              * Outputs whenever the element's state is updated
-             * @memberof Button
+             * @memberof Custom
              * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
             */
             stateChanged: function(eventHandler){
@@ -616,7 +744,7 @@ var MyToolkit = (function() {
             },
             /**
              * Outputs whenever the element is clicked
-             * @memberof Button
+             * @memberof Custom
              * @param {function} eventHandler - 
              * click events (eg.mouseover, mouseout, mousedown, mouseup)
             */
@@ -625,14 +753,14 @@ var MyToolkit = (function() {
             },
             /**
              * returns the src value of the element's svg.
-             * @memberof Button
+             * @memberof Custom
             */
             src: function(){
                 return clickArea;
             },
             /**
-             * returns the src value of the element's svg.
-             * @memberof Button
+             * sets the id of the Widget.
+             * @memberof Custom
              * @param {string} id - sets the id of the widget  
             */
             setId: function(id){
