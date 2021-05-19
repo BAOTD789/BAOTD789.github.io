@@ -85,7 +85,7 @@ btn3.onclick(function(event){
 var pb = new MyToolkit.ProgressBar(360);
 	pb.setId("pb");
 	pb.move(20, 350);
-	pb.setIncrement(.23);
+	pb.setIncrement(23);
 	pb.stateChanged(function(event){
 		console.log("Progress Bar: " + event)
 	})

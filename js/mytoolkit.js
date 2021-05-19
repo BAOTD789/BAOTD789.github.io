@@ -639,20 +639,18 @@ var MyToolkit = (function() {
             /**
              * Sets the Progress Bar to a certain percentage
              * @memberof ProgressBar
-             * @param {number} prog - percentage (0.00 - 1)
+             * @param {number} prog - percentage (0 - 100)
             */
             setIncrement: function(prog){
-                console.log(prog);
-                if((0 < prog) && (prog < 1)){
-                    console.log('ok!')
-                    progressWidth = prog * length;
+                var percent = prog / 100
+                if((0 < percent) && (percent < 1)){
+                    progressWidth = percent * length;
                     progress.width(progressWidth);
                 }
             },
             /**
-             * gets the Progress Bar current percentage
+             * gets the Progress Bar's current percentage
              * @memberof ProgressBar
-             * @param {number} prog - percentage (0.00 - 1)
             */
             getIncrement: function(){
                 console.log((progressWidth/length).toFixed(2));
