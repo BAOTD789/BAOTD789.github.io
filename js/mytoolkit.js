@@ -135,7 +135,7 @@ var MyToolkit = (function() {
         var checkbox = draw.group();
         var rect = checkbox.rect(25,25).fill('grey').stroke({color: "black", width: "2"})
         var cbText = checkbox.text(boxText).move(30);
-        var clicked = false;
+        var checked = false;
         var clickEvent = null;
         var stateEvent = null;
         var defaultState = "idle";
@@ -146,8 +146,8 @@ var MyToolkit = (function() {
             transition()
         })
         rect.mouseout(function(){
-            if(clicked) {
-                this.fill({ color: 'red'})
+            if(checked) {
+                this.fill({ color: 'green'})
             }
             else{
                 this.fill({ color: 'grey'})
@@ -162,16 +162,15 @@ var MyToolkit = (function() {
         })
         rect.mouseup(function(){
             if (defaultState == "pressed"){
-                if(clicked){
-                    clicked = false;
+                if(checked){
+                    checked = false;
                     this.fill({ color: 'grey'})
                 }
                 else{
-                    clicked = true;
-                    this.fill({ color: 'red'})
+                    checked = true;
+                    this.fill({ color: 'green'})
                 }
                 if(clickEvent != null)
-                    console.log("Checkbox Checked?: " + clicked);
                     clickEvent(event)
             }   
             defaultState = "up"
@@ -201,8 +200,11 @@ var MyToolkit = (function() {
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
+            checked: function(eventHandler){
+                return checked;
+            },
             /**
-             * Outputs whenever the element is clicked
+             * Allows for the element to be interacted with click events
              * @memberof CheckBox
              * @param {function} eventHandler - 
              * click events (eg.mouseover, mouseout, mousedown, mouseup)
@@ -223,7 +225,7 @@ var MyToolkit = (function() {
              * @param {string} id - sets the id of the widget  
             */
             setId: function(id){
-                rect.attr("id", id);
+                checkbox.attr("id", id);
             }
         }
     }
@@ -235,41 +237,47 @@ var MyToolkit = (function() {
     var RadioButton = function(num){
         var buttonSet = draw.group();
         for(var i = 0; i < num.length; i++){
-            console.log(buttonSet);
             var radButton = draw.group();
             var circle = radButton.circle(25, 25).fill('grey').stroke({color: "black", width: "2"})
             var rbText = radButton.text(num[i][0]).move(30);
-            var clickEvent = null;
-            var stateEvent = null;
-            var trueButtonPos = null;
-            var defaultState = "idle";
-            
+            radButton.data('clicked', num[i][1])
             if(num[i][1]){
-                trueButtonPos = i;
-                circle.fill({color: 'red'})
+                circle.fill('green');
             }
+            var stateEvent = null;
+            var defaultState = "idle";
             circle.mouseover(function(){
-                this.fill({ color: 'blue'})
-                defaultState = "hover"
+                this.fill('blue');
+                defaultState = "hover";
                 transition()
             })
             circle.mouseout(function(){
-                console.log(this.i);
-                if(true) {
-                    this.fill({ color: 'red'})
+                if(this.parent().data('clicked')){
+                    this.fill('green');
                 }
                 else{
-                    this.fill({ color: 'grey'})
+                    this.fill('grey');
                 }
-                defaultState = "idle"
+                defaultState = "idle";
                 transition()
             })
             circle.mousedown(function(){
-                defaultState = "pressed"
-                transition()
-            })
-            circle.mouseup(function(){
-                defaultState = "up"
+                if(this.parent().data('clicked')){
+                    this.parent().data('clicked', false)
+                    this.fill('grey');
+                    defaultState = num[buttonSet.index(this.parent())][0] +  " pressed to false!"
+                }
+                else{
+                    buttonSet.each(function(i,children){
+                        if(children.data('clicked'))
+                            children.data('clicked', false)
+                            this.get(0).fill('grey');
+                    })
+                    this.parent().data('clicked', true)
+                    this.fill('green');
+                    defaultState = num[buttonSet.index(this.parent())][0] +  " pressed to true and other buttons turned to false!"
+                }
+                //index of pressed button: buttonSet.index(this.parent())
                 transition()
             })
             radButton.move(0,i*30);
@@ -296,7 +304,7 @@ var MyToolkit = (function() {
                 return circle;
             },
             setId: function(id){
-                circle.attr("id", id);
+                buttonSet.attr("id", id);
             }
         }
     }
@@ -322,6 +330,9 @@ var MyToolkit = (function() {
             },
             src: function(){
                 return textbox;
+            },
+            setId: function(id){
+                textbox.attr("id", id);
             }
         }
     }
@@ -336,9 +347,9 @@ var MyToolkit = (function() {
         
         var bar = scrollBar.rect(35,height).fill('grey')
             .stroke({color: "black", width: "2"})
-        var upArrow = scrollBar.rect(35,height*0.10).fill('red')
+        var upArrow = scrollBar.rect(35,height*0.10).fill('green')
             .stroke({color: "black", width: "2"})
-        var downArrow = scrollBar.rect(35,height*0.10).fill('red')
+        var downArrow = scrollBar.rect(35,height*0.10).fill('green')
             .stroke({color: "black", width: "2"}).move(0,height*0.90)
         var nav = scrollBar.rect(35,height*0.10).fill('white')
             .stroke({color: "black", width: "2"}).move(0,height*0.10)
@@ -356,7 +367,7 @@ var MyToolkit = (function() {
             transition()
         })
         upArrow.mouseout(function(){
-            this.fill({ color: 'red'})
+            this.fill({ color: 'green'})
             defaultState = "idle"
             transition()
         })
@@ -373,7 +384,7 @@ var MyToolkit = (function() {
             transition()
         })
         upArrow.mouseup(function(){
-            this.fill({ color: 'red'})
+            this.fill({ color: 'green'})
             defaultState = "up"
             transition()
         })
@@ -383,7 +394,7 @@ var MyToolkit = (function() {
             transition()
         })
         downArrow.mouseout(function(){
-            this.fill({ color: 'red'})
+            this.fill({ color: 'green'})
             defaultState = "idle"
             transition()
         })
@@ -400,7 +411,7 @@ var MyToolkit = (function() {
             transition()
         })
         downArrow.mouseup(function(){
-            this.fill({ color: 'red'})
+            this.fill({ color: 'green'})
             defaultState = "up"
             transition()
         })
@@ -540,7 +551,7 @@ var MyToolkit = (function() {
                 return rect;
             },
             setId: function(id){
-                rect.attr("id", id);
+                progressBar.attr("id", id);
             }
         }
     }
@@ -625,7 +636,7 @@ var MyToolkit = (function() {
              * @param {string} id - sets the id of the widget  
             */
             setId: function(id){
-                clickArea.attr("id", id);
+                palette.attr("id", id);
             }
         }
     }

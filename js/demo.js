@@ -38,6 +38,7 @@ var cb = new MyToolkit.CheckBox("Checkbox 1");
 	cb.move(20,65);
 	cb.onclick(function(event){
 		console.log(event)
+		console.log("Checkbox marked?: " + cb.checked());
         //console.log(event.target)
     })
 	cb.stateChanged(function(event){
@@ -46,14 +47,19 @@ var cb = new MyToolkit.CheckBox("Checkbox 1");
 
 let opt = new Array(
 	["Radio Button 1", false],
-	["Radio Button 2", false],
+	["Radio Button 2", true],
 	["Radio Button 3", false],
 	);
 
 var rbSet = new MyToolkit.RadioButton(opt);
+	rbSet.setId("rbSet1");
 	rbSet.move(20,100);
+	rbSet.stateChanged(function(event){
+		console.log("Radio Buttons: " + event)
+	})
 
 var tb = new MyToolkit.TextBox;
+	tb.setId("tb1");
 	tb.move(190,23);
 
 var sb = new MyToolkit.ScrollBar(250);
@@ -77,6 +83,7 @@ btn3.onclick(function(event){
 })
 
 var pb = new MyToolkit.ProgressBar(360);
+	pb.setId("pb");
 	pb.move(20, 350);
 	pb.setIncrement(.23);
 	pb.stateChanged(function(event){
@@ -94,5 +101,6 @@ btn4.onclick(function(event){
 
 var cus = new MyToolkit.Custom(win.src());
 cus.move(425,50);
+cus.setId("cus");
 
 
