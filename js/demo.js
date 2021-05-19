@@ -1,13 +1,16 @@
 import {MyToolkit} from './mytoolkit.js';
 
+//Setting up base window
+var win = new MyToolkit.Window;
+
 // Implement a MyToolkit Button
 var btn = new MyToolkit.Button("Test Me");
     btn.setId("btn1");
     btn.move(20,20);
 	//event Handler for detecting clicks
     btn.onclick(function(event){
-        console.log(event)
-        console.log(event.target)
+		console.log(event)
+        //console.log(event.target)
 		pb.increase();
     })
 	//event Handler for state Changes
@@ -16,7 +19,6 @@ var btn = new MyToolkit.Button("Test Me");
 	})
 
 var btn2 = new MyToolkit.Button("Decrease Progress");
-btn2.setSize(140,30)
 btn2.setId("btn2");
 btn2.move(20,200);
 
@@ -35,7 +37,8 @@ var cb = new MyToolkit.CheckBox("Checkbox 1");
 	cb.setId("cb1");
 	cb.move(20,65);
 	cb.onclick(function(event){
-        console.log(event.target)
+		console.log(event)
+        //console.log(event.target)
     })
 	cb.stateChanged(function(event){
 		console.log("Checkbox: " + event)
@@ -57,8 +60,7 @@ var sb = new MyToolkit.ScrollBar(250);
 	sb.setId("sb1");
 	sb.move(340, 65);
 	sb.onclick(function(event){
-        console.log(event.target)
-		sb.increase();
+        sb.setThumbPos(event.y);
     })
 	sb.stateChanged(function(event){
 		console.log("Scroll bar: " + event)
@@ -66,17 +68,31 @@ var sb = new MyToolkit.ScrollBar(250);
 
 var btn3 = new MyToolkit.Button("Get Scroll Nav Position");
 btn3.setSize(170,30)
-btn3.setId("btn2");
+btn3.setId("btn3");
 btn3.move(20,250);
 
 //event Handler for detecting clicks
 btn3.onclick(function(event){
-	sb.getThumbPos();
+	console.log(sb.getThumbPos());
 })
 
 var pb = new MyToolkit.ProgressBar(360);
 	pb.move(20, 350);
+	pb.setIncrement(.23);
 	pb.stateChanged(function(event){
-		console.log(event)
+		console.log("Progress Bar: " + event)
 	})
+
+var btn4 = new MyToolkit.Button("Get Progress");
+btn4.setId("btn4");
+btn4.move(20,300);
+
+//event Handler for detecting clicks
+btn4.onclick(function(event){
+	pb.getIncrement();
+})
+
+var cus = new MyToolkit.Custom(win.src());
+cus.move(425,50);
+
 

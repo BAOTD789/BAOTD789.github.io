@@ -32,9 +32,19 @@ import {SVG} from './svg.min.js';
 /** This is the Main Toolkit with all the custom widgets */
 var MyToolkit = (function() {
     var draw = SVG().addTo('body').size('100%','2000');
-    var window = draw.group();
-    window.rect(400,400).stroke("orange").fill("white");
-        
+    
+    var Window = function(){
+        var window = draw.group();
+        window.rect(400,400).stroke("orange").fill("white");
+
+        return {
+            add(widget){
+                window.before(widget);
+                window.add(widget);
+            }
+        }
+    }    
+
     /** @module
      * Button
      * @constructor
@@ -42,30 +52,33 @@ var MyToolkit = (function() {
      * of the button.
     */
     var Button = function(buttonText){
+        let width = 75;
+        let height = 35;
         var button = draw.group();
-        var rect = button.rect(75,35).fill('grey').stroke({color: "black", width: "2"})
-        var bText = button.text(buttonText).move(10,7);
+        var rect = button.rect(width, height).fill('grey').stroke({color: "black", width: "2"})
+        var bText = button.text(buttonText).fill('white').move(width*.10,height*.2);
+        var clickArea = button.rect(width, height).fill({color:'grey', opacity: 0});
         var clickEvent = null;
         var stateEvent = null;
         var defaultState = "idle";
 
-        rect.mouseover(function(){
-            this.fill({ color: 'blue'})
+        clickArea.mouseover(function(){
+            rect.fill({ color: 'blue'})
             defaultState = "hover"
             transition()
         })
-        rect.mouseout(function(){
-            this.fill({ color: 'grey'})
+        clickArea.mouseout(function(){
+            rect.fill({ color: 'grey'})
             defaultState = "idle"
             transition()
         })
-        rect.mousedown(function(){
-            this.fill({ color: 'pink'})
+        clickArea.mousedown(function(){
+            rect.fill({ color: 'pink'})
             defaultState = "pressed"
             transition()
         })
-        rect.mouseup(function(){
-            this.fill({ color: 'grey'})
+        clickArea.mouseup(function(){
+            rect.fill({ color: 'grey'})
             if (defaultState == "pressed"){
                 if(clickEvent != null)
                     clickEvent(event)
@@ -90,7 +103,19 @@ var MyToolkit = (function() {
                 button.move(x, y);
             },
             /**
-             * Outputs whenever the button's state is updated
+             * set the size of the element
+             * @memberof Button
+             * @param {Number} width - new width of the button
+             * @param {Number} height - new height of the button
+            */
+            setSize: function(width, height) {
+                rect.width(width);
+                clickArea.width(width);
+                rect.height(height);
+                clickArea.height(height);
+            },
+            /**
+             * Outputs whenever the element's state is updated
              * @memberof Button
              * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
             */
@@ -98,7 +123,7 @@ var MyToolkit = (function() {
                 stateEvent = eventHandler
             },
             /**
-             * Outputs whenever the button is clicked
+             * Outputs whenever the element is clicked
              * @memberof Button
              * @param {function} eventHandler - 
              * click events (eg.mouseover, mouseout, mousedown, mouseup)
@@ -107,27 +132,33 @@ var MyToolkit = (function() {
                 clickEvent = eventHandler
             },
             /**
-             * returns the src value of the button's svg.
+             * returns the src value of the element's svg.
              * @memberof Button
             */
             src: function(){
-                return rect;
+                return clickArea;
             },
             /**
-             * returns the src value of the button's svg.
+             * returns the src value of the element's svg.
              * @memberof Button
              * @param {string} id - sets the id of the widget  
             */
             setId: function(id){
-                rect.attr("id", id);
+                clickArea.attr("id", id);
             }
         }
     }
 
-    var CheckBox = function(){
+    /** @module
+     * CheckBox
+     * @constructor
+     * @param {string} boxText - The text to put to the right of the
+     * checkbox
+    */
+    var CheckBox = function(boxText){
         var checkbox = draw.group();
         var rect = checkbox.rect(25,25).fill('grey').stroke({color: "black", width: "2"})
-        var cbText = checkbox.text("Checkbox").move(30);
+        var cbText = checkbox.text(boxText).move(30);
         var clicked = false;
         var clickEvent = null;
         var stateEvent = null;
@@ -163,8 +194,8 @@ var MyToolkit = (function() {
                     clicked = true;
                     this.fill({ color: 'red'})
                 }
-                console.log(clicked)
                 if(clickEvent != null)
+                    console.log("Checkbox Checked?: " + clicked);
                     clickEvent(event)
             }   
             defaultState = "up"
@@ -177,24 +208,54 @@ var MyToolkit = (function() {
 
         }
         return {
+            /**
+             * Move the element across the x&amp;y plane
+             * @memberof CheckBox
+             * @param {Number} x - moves the element up or down. Pos → &amp; Neg  ←.
+             * @param {Number} y - moves the element up or down.  Pos ↑ &amp; Neg ↓.
+            */
             move: function(x, y) {
                 checkbox.move(x, y);
             },
+            /**
+             * Outputs whenever the element's state is updated
+             * @memberof CheckBox
+             * @param {function} eventHandler - state events (eg.idle, hover, pressed, up)
+            */
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
             },
+            /**
+             * Outputs whenever the element is clicked
+             * @memberof CheckBox
+             * @param {function} eventHandler - 
+             * click events (eg.mouseover, mouseout, mousedown, mouseup)
+            */
             onclick: function(eventHandler){
                 clickEvent = eventHandler
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof CheckBox
+            */
             src: function(){
                 return rect;
             },
+            /**
+             * returns the src value of the element's svg.
+             * @memberof CheckBox
+             * @param {string} id - sets the id of the widget  
+            */
             setId: function(id){
                 rect.attr("id", id);
             }
         }
     }
-
+    /** @module
+     * RadioButton
+     * @constructor
+     * @param {number} num - amount of RadioButtons for the set
+    */
     var RadioButton = function(num){
         var buttonSet = draw.group();
         for(var i = 0; i &lt; num.length; i++){
@@ -204,8 +265,11 @@ var MyToolkit = (function() {
             var rbText = radButton.text(num[i][0]).move(30);
             var clickEvent = null;
             var stateEvent = null;
+            var trueButtonPos = null;
             var defaultState = "idle";
+            
             if(num[i][1]){
+                trueButtonPos = i;
                 circle.fill({color: 'red'})
             }
             circle.mouseover(function(){
@@ -214,8 +278,8 @@ var MyToolkit = (function() {
                 transition()
             })
             circle.mouseout(function(){
-                console.log(currentButton[1])
-                if(currentButton[1]) {
+                console.log(this.i);
+                if(true) {
                     this.fill({ color: 'red'})
                 }
                 else{
@@ -235,8 +299,6 @@ var MyToolkit = (function() {
             radButton.move(0,i*30);
             buttonSet.add(radButton);
         }
-
-
        
         function transition()
         {
@@ -263,13 +325,18 @@ var MyToolkit = (function() {
         }
     }
 
+    /** @module
+     * TextBox
+     * @constructor
+    */
     var TextBox = function(){
-        console.log('test')
         var textbox = draw.group();
         var rect = textbox.rect(190,30).fill("white").stroke({color: "black", width: 2});
-        var text = textbox.text("hello").move(2,4);
-        var caret = textbox.line(45, 2.5, 45, 25).stroke({width:1, color: "black"})
-        window.add(textbox)
+        var text = textbox.text("").move(2,4);
+        var caret = textbox.rect(1, 20).stroke({width:.5, color: "black"}).move(3,4);
+        var runner = caret.animate().width(0);
+        runner.loop(1000, 1, 0);
+
         return {
             move: function(x,y){
                 textbox.move(x,y);
@@ -280,16 +347,27 @@ var MyToolkit = (function() {
         }
     }
 
+    /** @module
+     * ScrollBar
+     * @constructor
+     * @param {number} height - sets height of the scroll bar.
+    */
     var ScrollBar = function(height){
         var scrollBar = draw.group(); 
+        
         var bar = scrollBar.rect(35,height).fill('grey')
             .stroke({color: "black", width: "2"})
-        var upArrow = scrollBar.rect(35,height*0.13).fill('red')
+        var upArrow = scrollBar.rect(35,height*0.10).fill('red')
             .stroke({color: "black", width: "2"})
-        var downArrow = scrollBar.rect(35,height*0.13).fill('red')
-            .stroke({color: "black", width: "2"}).move(0,height*0.97)
-        var nav = scrollBar.rect(35,height*0.13).fill('black')
-            .stroke({color: "black", width: "2"}).move(0,height*0.13)
+        var downArrow = scrollBar.rect(35,height*0.10).fill('red')
+            .stroke({color: "black", width: "2"}).move(0,height*0.90)
+        var nav = scrollBar.rect(35,height*0.10).fill('white')
+            .stroke({color: "black", width: "2"}).move(0,height*0.10)
+        
+        var topPos = upArrow.y();
+        var curPos = topPos;
+        var botPos = downArrow.y() - height*.3;
+        console.log(topPos,botPos);
         var clickEvent = null;
         var stateEvent = null;
         var defaultState = "idle";
@@ -306,14 +384,15 @@ var MyToolkit = (function() {
         })
         upArrow.mousedown(function(){
             this.fill({ color: 'pink'})
-            defaultState = "pressed"
+            if(curPos > topPos) {
+                nav.dmove(0,-height*0.10)
+                curPos -= height*0.10;
+                defaultState = "scrolling up"
+            }
             transition()
         })
         upArrow.mouseup(function(){
             this.fill({ color: 'red'})
-            if (defaultState == "pressed"){
-                nav.dmove(0,-height*0.13)
-            }   
             defaultState = "up"
             transition()
         })
@@ -329,14 +408,15 @@ var MyToolkit = (function() {
         })
         downArrow.mousedown(function(){
             this.fill({ color: 'pink'})
-            defaultState = "pressed"
+            if(curPos &lt;= botPos) {
+                nav.dmove(0,height*0.10)
+                curPos += height*0.10;
+                defaultState = "scrolling down"
+            }
             transition()
         })
         downArrow.mouseup(function(){
             this.fill({ color: 'red'})
-            if (defaultState == "pressed"){
-                nav.dmove(0,height*0.13)
-            }   
             defaultState = "up"
             transition()
         })
@@ -350,14 +430,12 @@ var MyToolkit = (function() {
             move: function(x, y) {
                 scrollBar.move(x, y);
             },
+            getThumbPos: function() {
+                //console.log("y: " + nav.node.y.baseVal.value + "px");
+                console.log(curPos)
+            },
             stateChanged: function(eventHandler){
                 stateEvent = eventHandler
-            },
-            increase: function(){
-                nav.move(nav.x, height * 0.10); 
-            },
-            decrease: function(){
-                nav.move(nav.x, -height * 0.10);                     
             },
             onclick: function(eventHandler){
                 clickEvent = eventHandler
@@ -371,16 +449,23 @@ var MyToolkit = (function() {
         }
     }
 
-    var ProgressBar = function(width){
+    /** @module
+     * ProgressBar
+     * @constructor
+     * @param {number} length - sets length of the progress bar.
+    */
+    var ProgressBar = function(length){
         var progressBar = draw.group();
-        var barWidth = width;
+        var barWidth = length;
         var progressWidth = 0;
-        var bar = progressBar.rect(width,35).fill('grey')
+        var bar = progressBar.rect(length,35).fill('grey')
             .stroke({color: "black", width: "2"})
-        var progress = progressBar.rect(width,35).fill('green')
+        var progress = progressBar.rect(length,35).fill('green')
             .stroke({color: "black", width: "2"});
         var stateEvent = null;
         var defaultState = "idle";
+
+
 
         function transition()
         {
@@ -396,14 +481,45 @@ var MyToolkit = (function() {
                 stateEvent = eventHandler
             },
             increase: function(){
-                if(progressWidth &lt; width)
-                    progressWidth += width * 0.10;
+                if(progressWidth + length * 0.10 &lt;= length){
+                    progressWidth += length * 0.10;
                     progress.width(progressWidth);
+                    defaultState = "increasing";
+                    transition();
+                }
+                else{
+                    defaultState = "idle";
+                    transition();
+                }
+                
             },
             decrease: function(){
-                if(progressWidth > 0)
-                    progressWidth -= width * 0.10;
+                if(progressWidth > 0){
+                    if(progressWidth - length * 0.1 &lt; 0){
+                        progressWidth = 0;
+                    }
+                    else{
+                        progressWidth -= length * 0.10;
+                    }
                     progress.width(progressWidth);
+                    defaultState = "decreasing";
+                    transition();
+                }
+                else{
+                    defaultState = "idle";
+                    transition();
+                }
+            },
+            setIncrement: function(prog){
+                console.log(prog);
+                if((0 &lt; prog) &amp;&amp; (prog &lt; 1)){
+                    console.log('ok!')
+                    progressWidth = prog * length;
+                    progress.width(progressWidth);
+                }
+            },
+            getIncrement: function(prog){
+                console.log((progressWidth/length).toFixed(2));
             },
             onclick: function(eventHandler){
                 clickEvent = eventHandler
@@ -417,11 +533,14 @@ var MyToolkit = (function() {
         }
     }
 
+    /** @module
+     * Custom - Tab Window
+     * @constructor
+    */
     var Custom = function(){
-        
     }
     
-    return {Button, CheckBox, RadioButton, TextBox, ScrollBar, ProgressBar, Custom}
+    return {Window, Button, CheckBox, RadioButton, TextBox, ScrollBar, ProgressBar, Custom}
 }());
 
 export{MyToolkit}</code></pre>
@@ -434,13 +553,13 @@ export{MyToolkit}</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Button.html">Button</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MyToolkit">MyToolkit</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Button.html">Button</a></li><li><a href="CheckBox.html">CheckBox</a></li><li><a href="Custom%2520-%2520Tab%2520Window.html">Custom - Tab Window</a></li><li><a href="ProgressBar.html">ProgressBar</a></li><li><a href="RadioButton.html">RadioButton</a></li><li><a href="ScrollBar.html">ScrollBar</a></li><li><a href="TextBox.html">TextBox</a></li></ul><h3>Global</h3><ul><li><a href="global.html#MyToolkit">MyToolkit</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 18 2021 00:10:21 GMT-0700 (Pacific Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.7</a> on Tue May 18 2021 17:46:36 GMT-0700 (Pacific Daylight Time)
 </footer>
 
 <script> prettyPrint(); </script>
